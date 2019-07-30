@@ -1,0 +1,46 @@
+# Site specific variables
+LDAP_URI="ldap://example.com"
+LDAP_BASE_DN="OU=Users,dc=example,dc=com"
+LDAP_CERT_ATTR=userCertificate
+LDAP_BINDDN="CN=srvAccount,OU=ServiceAccounts,DC=example,DC=com"
+# Ensure this file only contains the password and doesn't have a trailing newline
+LDAP_BIND_PASS="/etc/ssh/ssh_ldap_service_pass"
+# Filter out disabled accounts from AD using userAccountControl
+LDAP_USER_SEARCH="(&(CN=${SSHUSER})(!(userAccountControl:1.2.840.113556.1.4.803:=514)))"
+# Expire cached user certs after this many minutes (NOT IMPLEMENTED)
+LDAP_USER_CERT_CACHE_MAX_AGE='480'
+
+CACHE_DIR="/var/cache/pivauth/crl_example"
+
+SSH_PUBKEY_COMMENT="${SSHUSER}@EXAMPLE.COM"
+
+# Attempt to use OCSP (1=True, 0=False)
+OCSP_ENABLE=0
+
+# User cert signing CA
+USER_CERT_ISSUER="/etc/pki/CA/certs/IssuingCA.pem"
+# Intermediate CA
+INTERMEDIATE_CA="/etc/pki/CA/certs/IntermediateCA.pem"
+OCSP_RESPONDER=http://example.com/OCSP/Responder
+
+# URL to download the CRL for the user certificate
+CRL_URL=http://example.com/IssuingCA.crl
+INTERMEDIATE_CRL_URL=http://example.com/IntermediateCA.crl
+
+# All CAs needed to validate user certificates
+CACERTS="/etc/pki/CA/certs/IssuingCA.pem /etc/pki/CA/certs/IntermediateCA.pem"
+CACERTS_SHA512="3975eeceb7a30eb17723a7359aff77f017a365bb30684eaf21595508c151f4f7434c3920e4b0ace92e2beb382cce6d1f41ed51e5d5b0ba47ec0f13e5af3e37d8  /etc/pki/CA/certs/IssuingCA.pem
+                7c92dfdbebba43c51517e5dce6d9b93b5b9f46800d8d5768aadac8a85c67092b3c01b6e75c463cae0fb802649de94fa509256cc6ede16c64078e50e653a8459d  /etc/pki/CA/certs/IntermediateCA.pem"
+
+# Time skew we're willing to accept from an OCSP CRL endpoint's notBefore time. Only implemented for OCSP not CRL.
+VALIDITY_PERIOD="600"
+
+# Some users don't have matching Active Directory and local usernames, 
+# so we have the following associative array to translate. Add entries like:
+# declare -A LDAP_USER_LOOKUP_TABLE=(
+#  ["localUser"]=ldapUser
+#  ["localUser2"]=ldapUser2
+# )
+
+declare -A LDAP_USER_LOOKUP_TABLE=()
+
